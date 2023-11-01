@@ -160,8 +160,8 @@ public:
                 else if(request.getMethod() == Poco::Net::HTTPRequest::HTTP_POST)
                 {
                     if (form.has("name") && form.has("type") && form.has("description") &&
-                     form.has("price") && form.has("author_id"))
-                    {
+                     form.has("price") && form.has("author_id") && form.has("quantity"))
+                     {
                         database::Product product;
                         product.name() = form.get("name");
                         product.type() = form.get("type");
