@@ -67,7 +67,7 @@ private:
     {
         if (name.length() < 3)
         {
-            reason = "Name must be at leas 3 signs";
+            reason = "Name must be at least 3 signs";
             return false;
         }
 

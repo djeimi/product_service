@@ -52,7 +52,7 @@ paths:
             application/json:
               schema:
                 type: string
-  /products:
+  /product:
     get:
       summary: Чтение информации о продукте
       parameters:
