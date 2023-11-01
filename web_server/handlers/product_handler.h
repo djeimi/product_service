@@ -347,7 +347,7 @@ public:
         catch (...)
         {
         }
-        notFoundError(response, request.getURI(), "request ot found");
+        notFoundError(response, request.getURI(), "request not found");
     }
 
 private:
