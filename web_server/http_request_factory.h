@@ -56,7 +56,7 @@ public:
         std::cout << "request:" << request.getURI()<< std::endl;
         if (hasSubstr(request.getURI(),"/search_products") ||
             hasSubstr(request.getURI(),"/all_products") ||
-            hasSubstr(request.getURI(),"/products")) 
+            hasSubstr(request.getURI(),"/product")) 
             return new ProductHandler(_format);
         return 0;
     }
