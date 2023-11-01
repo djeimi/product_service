@@ -1,3 +1,0 @@
-/home/elvira/arch_homework1/arch_homework_2/product_service/build/CMakeFiles/product_service.dir
-/home/elvira/arch_homework1/arch_homework_2/product_service/build/CMakeFiles/edit_cache.dir
-/home/elvira/arch_homework1/arch_homework_2/product_service/build/CMakeFiles/rebuild_cache.dir
