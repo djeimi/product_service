@@ -1,0 +1,285 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'Product API'
+  description: API для работы с продуктами
+servers:
+  - url: http://localhost:8082
+    description: Example server
+paths:
+  /search_products:
+    get:
+      summary: Поиск продуктов по маске
+      parameters:
+      - name: name
+        description: Название
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The products for the provided masks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/products'
+        404:
+          description: No products found for the provided mask
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /all_products:
+    get:
+      summary: Получение списка продуктов
+      responses:
+        '200':
+          description: Product ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/products'
+        401:
+          description: Not authentication
+          content:
+            application/json:
+              schema:
+                type: string
+  /products:
+    get:
+      summary: Чтение информации о продукте
+      parameters:
+      - name: id
+        description: Уникальный идентификатор продукта
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/product_id'
+      responses:
+        '200':
+          description: Найденный продукт
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/product'
+        404:
+          description: Продукт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Неожиданная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Добавление нового продукта
+      parameters:
+      - name: name
+        description: Название продукта
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: category_name
+        description: Категория продукта
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: price
+        description: Цена продукта
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: quantity
+        description: Количество продукта на складе
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: description
+        description: Описание продукта
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: author_id
+        description: Идентефикатор создателя
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Идентификатор, добавленного продукта
+          content:
+            application/json:
+              schema:
+                type: integer
+        404:
+          description: Ошибка добавления продукта
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Неожиданная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Изменение продукта
+      parameters:
+      - name: id
+        description: Уникальный идентификатор продукта
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/product_id'
+      - name: name
+        description: Название продукта
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: type
+        description: Категория
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: description
+        description: Описание
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: price
+        description: Цена 
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: quantity
+        description: Количество 
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: author_id
+        description: Идентефикатор создателя
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Успешное изменение продукта
+        400:
+          description: Недостаточно параметров
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Продукт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Неожиданная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Удаление продукта
+      parameters:
+      - name: id
+        description: Уникальный идентификатор продукта
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/product_id'
+      responses:
+        '200':
+          description: Продукт успешно удален
+        400:
+          description: Недостаточно параметров
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Услуга не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Неожиданная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    product_id:
+      description: Уникальный идентификатор продукта
+      type: integer
+    products:
+      type: array
+      items:
+        $ref: '#/components/schemas/product'
+    product:
+      type: object
+      required:
+        - id
+        - name
+        - type
+        - description
+        - price
+        - quantity
+        - author_id
+      properties:
+        id:
+          $ref: '#/components/schemas/product_id'
+        name:
+          type: string
+        type:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+        quantity:
+          type: string
+        author_id:
+          type: string
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          description: Сообщение об ошибке
+          type: string
+  securitySchemes:
+      basicAuth:     
+        type: http
+        scheme: basic
+security:
+  - basicAuth: []
