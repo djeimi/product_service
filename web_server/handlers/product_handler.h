@@ -159,7 +159,7 @@ public:
                 }
                 else if(request.getMethod() == Poco::Net::HTTPRequest::HTTP_POST)
                 {
-                    if (form.has("name") && form.has("type") && form.has("desc") &&
+                    if (form.has("name") && form.has("type") && form.has("description") &&
                      form.has("price") && form.has("author_id"))
                     {
                         database::Product product;
