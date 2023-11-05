@@ -195,7 +195,7 @@ namespace database
             Statement select(session);
             std::vector<Product> result;
             Product a;
-            select << "SELECT id, name, type, description, price, quantity, author_id FROM Product",
+            select << "SELECT id, name, type, description, price, quantity, author_id FROM 'Product'",
                 into(a._id),
                 into(a._name),
                 into(a._type),
