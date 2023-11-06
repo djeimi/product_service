@@ -344,8 +344,9 @@ public:
                 }
             }          
         }
-        catch (...)
+        catch (const Poco::Exception& e)
         {
+            std::cout<<e.displayText()<<std::endl;
         }
         notFoundError(response, request.getURI(), "request not found");
     }

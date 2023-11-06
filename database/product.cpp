@@ -27,14 +27,14 @@ namespace database
             Poco::Data::Session session = database::Database::get().create_session();
             Statement create_stmt(session);
             create_stmt << "CREATE TABLE IF NOT EXISTS `Product` ("
-                        << "`product_id` INT NOT NULL AUTO_INCREMENT,"
+                        << "`id` INT NOT NULL AUTO_INCREMENT,"
                         << "`name` VARCHAR(256) NOT NULL,"
                         << "`type` VARCHAR(256) NOT NULL,"
                         << "`description` VARCHAR(256) NOT NULL,"
                         << "`price` INT NOT NULL,"
                         << "`quantity` VARCHAR(256) NOT NULL,"
                         << "`author_id` INT NOT NULL,"
-                        << "PRIMARY KEY (`product_id`),"
+                        << "PRIMARY KEY (`id`),"
                         << "FOREIGN KEY (`author_id`) REFERENCES `user` (`user_id`)"
                         << ");",
                 now;
@@ -96,7 +96,7 @@ namespace database
             Statement del(session);
             
             Product a;
-            del << "DELETE FROM `Product` WHERE `product_id` = ?;",
+            del << "DELETE FROM `Product` WHERE `id` = ?;",
                 use(id),
                 range(0, 1); 
             del.execute();
