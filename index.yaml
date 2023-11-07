@@ -61,7 +61,7 @@ paths:
         in: query
         required: true
         schema:
-          $ref: '#/components/schemas/product_id'
+          $ref: '#/components/schemas/id'
       responses:
         '200':
           description: Найденный продукт
@@ -147,7 +147,7 @@ paths:
         in: query
         required: true
         schema:
-          $ref: '#/components/schemas/product_id'
+          $ref: '#/components/schemas/id'
       - name: name
         description: Название продукта
         in: query
@@ -213,7 +213,7 @@ paths:
         in: query
         required: true
         schema:
-          $ref: '#/components/schemas/product_id'
+          $ref: '#/components/schemas/id'
       responses:
         '200':
           description: Продукт успешно удален
@@ -237,7 +237,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    product_id:
+    id:
       description: Уникальный идентификатор продукта
       type: integer
     products:
@@ -256,7 +256,7 @@ components:
         - author_id
       properties:
         id:
-          $ref: '#/components/schemas/product_id'
+          $ref: '#/components/schemas/id'
         name:
           type: string
         type:

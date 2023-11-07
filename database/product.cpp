@@ -35,7 +35,7 @@ namespace database
                         << "`quantity` VARCHAR(256) NOT NULL,"
                         << "`author_id` INT NOT NULL,"
                         << "PRIMARY KEY (`id`),"
-                        << "FOREIGN KEY (`author_id`) REFERENCES `user` (`user_id`)"
+                        << "FOREIGN KEY (`author_id`) REFERENCES `user` (`id`)"
                         << ");",
                 now;
         }
