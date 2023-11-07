@@ -62,7 +62,7 @@ namespace database
 
             update  << "UPDATE `Product`"
                     << "SET `name` = ?, `type` = ?, `description` = ?, `price` = ?, `price` = ?, `author_id`= ? "
-                    << "where `service_id` = ?",
+                    << "where `id` = ?",
                 use(_name),
                 use(_type),
                 use(_description),
