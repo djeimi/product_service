@@ -14,7 +14,7 @@ namespace database
             std::string _name;
             std::string _type;
             std::string _description;
-            std::string _price;
+            int _price;
             std::string _quantity;
             long _author_id;
 
@@ -26,7 +26,7 @@ namespace database
             const std::string &get_name() const;
             const std::string &get_type() const;
             const std::string &get_description() const;
-            const std::string &get_price() const;
+            const int &get_price() const;
             const std::string &get_quantity() const;
             const long &get_author_id() const;
 
@@ -34,7 +34,7 @@ namespace database
             std::string &name();
             std::string &type();
             std::string &description();
-            std::string &price();
+            int &price();
             std::string &quantity();
             long &author_id();
 

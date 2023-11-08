@@ -144,7 +144,7 @@ namespace database
         product.name() = object->getValue<std::string>("name");
         product.type() = object->getValue<std::string>("type");
         product.description() = object->getValue<std::string>("description");
-        product.price() = object->getValue<std::string>("price");
+        product.price() = object->getValue<int>("price");
         product.quantity() = object->getValue<std::string>("quantity");
         product.author_id() = object->getValue<long>("author_id");
 
@@ -339,9 +339,14 @@ namespace database
         return _description;
     }
 
-    const std::string &Product::get_price() const
+    const int &Product::get_price() const
     {
         return _price;
+    }
+
+    const std::string &Product::get_quantity() const
+    {
+        return _quantity;
     }
 
     long &Product::id()
@@ -364,7 +369,7 @@ namespace database
         return _description;
     }
 
-    std::string &Product::price()
+    int &Product::price()
     {
         return _price;
     }
