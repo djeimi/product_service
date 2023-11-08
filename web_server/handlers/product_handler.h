@@ -74,9 +74,9 @@ private:
         return true;
     };
 
-    bool check_price(const std::string &price, std::string &reason)
+    bool check_price(const int &price, std::string &reason)
     {
-        if (stod(price) < 0)
+        if (price < 0)
         {
             reason = "Price must be non-negative";
             return false;
@@ -166,7 +166,7 @@ public:
                         product.name() = form.get("name");
                         product.type() = form.get("type");
                         product.description() = form.get("description");
-                        product.price() = form.get("price");
+                        product.price() = stoi(form.get("price"));
                         product.quantity() = form.get("quantity");
                         //add check foreign key
                         product.author_id() = atol(form.get("author_id").c_str());
@@ -220,7 +220,7 @@ public:
                         product.name() = form.get("name");
                         product.type() = form.get("type");
                         product.description() = form.get("description");
-                        product.price() = form.get("price");
+                        product.price() = stoi(form.get("price"));
                         product.quantity() = form.get("quantity");
                         //add check foreign key
                         product.author_id() = atol(form.get("author_id").c_str());
