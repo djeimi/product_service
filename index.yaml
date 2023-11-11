@@ -41,7 +41,7 @@ paths:
       summary: Получение списка продуктов
       responses:
         '200':
-          description: Product ID
+          description: Array of products
           content:
             application/json:
               schema:

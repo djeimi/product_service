@@ -74,6 +74,18 @@ private:
         return true;
     };
 
+    bool check_existance_of_product(std::string &responseBody, std::string product_name, std::string &reason)
+    {
+        if (responseBody.find(product_name) != std::string::npos)
+        {
+            reason = "Product_name" + product_name + "already exists.";
+            return true;
+        }
+
+        reason = "Product_name" + product_name + "does not exist.";
+        return false;
+    };
+
     bool check_price(const int &price, std::string &reason)
     {
         if (price < 0)
@@ -85,7 +97,7 @@ private:
         return true;
     }
 
-    void badRequestError(HTTPServerResponse &response,  std::string instance)
+    void badRequestError(HTTPServerResponse &response, std::string instance)
     {
         response.setStatus(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
         response.setChunkedTransferEncoding(true);
@@ -128,9 +140,9 @@ public:
         {
             if (hasSubstr(request.getURI(), "/product"))
             {
-                if(request.getMethod() == Poco::Net::HTTPRequest::HTTP_GET)
+                if (request.getMethod() == Poco::Net::HTTPRequest::HTTP_GET)
                 {
-                    if(form.has("id"))
+                    if (form.has("id"))
                     {
                         long id = atol(form.get("id").c_str());
 
@@ -155,40 +167,71 @@ public:
                         badRequestError(response, request.getURI());
                         return;
                     }
-                    
                 }
-                else if(request.getMethod() == Poco::Net::HTTPRequest::HTTP_POST)
+                else if (request.getMethod() == Poco::Net::HTTPRequest::HTTP_POST)
                 {
                     if (form.has("name") && form.has("type") && form.has("description") &&
-                     form.has("price") && form.has("author_id") && form.has("quantity"))
-                     {
+                        form.has("price") && form.has("author_id") && form.has("quantity"))
+                    {
                         database::Product product;
                         product.name() = form.get("name");
                         product.type() = form.get("type");
                         product.description() = form.get("description");
                         product.price() = stoi(form.get("price"));
                         product.quantity() = form.get("quantity");
-                        //add check foreign key
+                        // add check foreign key
                         product.author_id() = atol(form.get("author_id").c_str());
-    
-                        bool check_result = true;
+
+                        bool check_result1 = true;
+                        bool check_result2 = true;
+                        bool check_result3 = true;
                         std::string message;
                         std::string reason;
-    
+
+                        auto results = database::Product::read_all();
+                        if (!results.empty())
+                        {
+                            Poco::JSON::Array arr;
+                            for (auto s : results)
+                                arr.add(s.toJSON());
+
+                            response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
+                            response.setChunkedTransferEncoding(true);
+                            response.setContentType("application/json");
+                            std::stringstream responseStream;
+                                Poco::JSON::Stringifier::stringify(arr, responseStream);
+                                std::string responseBody = responseStream.str();
+                                std::ostream &ostr = response.send();
+                                ostr << responseBody;
+
+                            if (check_existance_of_product(responseBody, product.name(), reason))
+                                {
+                                    check_result1 = false;
+                                    message += reason;
+                                    message += "<br>";
+                                }
+                            return;
+                        }
+                        else
+                        {
+                            notFoundError(response, request.getURI(), "Products not found");
+                            return;
+                        }
+
                         if (!check_name(product.get_name(), reason))
                         {
-                            check_result = false;
+                            check_result2 = false;
                             message += reason;
                             message += "<br>";
                         }
-                        if(!check_price(product.get_price(), reason))
+                        if (!check_price(product.get_price(), reason))
                         {
-                            check_result = false;
+                            check_result3 = false;
                             message += reason;
                             message += "<br>";
                         }
-    
-                        if (check_result)
+
+                        if (check_result1 && check_result2 && check_result3)
                         {
                             product.save_to_mysql();
                             response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
@@ -210,10 +253,10 @@ public:
                         return;
                     }
                 }
-                else if(request.getMethod() == Poco::Net::HTTPRequest::HTTP_PUT)
+                else if (request.getMethod() == Poco::Net::HTTPRequest::HTTP_PUT)
                 {
                     if (form.has("id") && form.has("name") && form.has("type") &&
-                     form.has("description") && form.has("price") && form.has("quantity") && form.has("author_id"))
+                        form.has("description") && form.has("price") && form.has("quantity") && form.has("author_id"))
                     {
                         database::Product product;
                         product.id() = atol(form.get("id").c_str());
@@ -222,26 +265,26 @@ public:
                         product.description() = form.get("description");
                         product.price() = stoi(form.get("price"));
                         product.quantity() = form.get("quantity");
-                        //add check foreign key
+                        // add check foreign key
                         product.author_id() = atol(form.get("author_id").c_str());
-    
+
                         bool check_result = true;
                         std::string message;
                         std::string reason;
-    
+
                         if (!check_name(product.get_name(), reason))
                         {
                             check_result = false;
                             message += reason;
                             message += "<br>";
                         }
-                        if(!check_price(product.get_price(), reason))
+                        if (!check_price(product.get_price(), reason))
                         {
                             check_result = false;
                             message += reason;
                             message += "<br>";
                         }
-    
+
                         if (check_result)
                         {
                             product.update_in_mysql();
@@ -262,9 +305,9 @@ public:
                         return;
                     }
                 }
-                else if(request.getMethod() == Poco::Net::HTTPRequest::HTTP_DELETE)
+                else if (request.getMethod() == Poco::Net::HTTPRequest::HTTP_DELETE)
                 {
-                    if(form.has("id"))
+                    if (form.has("id"))
                     {
                         long id = atol(form.get("id").c_str());
 
@@ -286,14 +329,12 @@ public:
                         badRequestError(response, request.getURI());
                         return;
                     }
-                    
                 }
-                
             }
             else if (hasSubstr(request.getURI(), "/all_products"))
             {
                 auto results = database::Product::read_all();
-                if(!results.empty())
+                if (!results.empty())
                 {
                     Poco::JSON::Array arr;
                     for (auto s : results)
@@ -305,21 +346,20 @@ public:
                     std::ostream &ostr = response.send();
                     Poco::JSON::Stringifier::stringify(arr, ostr);
                     return;
-                    
                 }
                 else
                 {
-                    notFoundError(response, request.getURI(), "product not found");
+                    notFoundError(response, request.getURI(), "Products not found");
                     return;
-                }                            
+                }
             }
             else if (hasSubstr(request.getURI(), "/search_products"))
             {
-                if(form.has("name") )
+                if (form.has("name"))
                 {
                     std::string fn = form.get("name");
                     auto results = database::Product::search(fn);
-                    if(!results.empty())
+                    if (!results.empty())
                     {
                         Poco::JSON::Array arr;
                         for (auto s : results)
@@ -335,18 +375,18 @@ public:
                     {
                         notFoundError(response, request.getURI(), "product not found");
                         return;
-                    }                   
+                    }
                 }
                 else
                 {
                     badRequestError(response, request.getURI());
                     return;
                 }
-            }          
+            }
         }
-        catch (const Poco::Exception& e)
+        catch (const Poco::Exception &e)
         {
-            std::cout<<e.displayText()<<std::endl;
+            std::cout << e.displayText() << std::endl;
         }
         notFoundError(response, request.getURI(), "request not found");
     }
