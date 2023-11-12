@@ -79,12 +79,12 @@ private:
         auto result = database::Product::search(product_name);
         if (result)
         {
-            return false;
+            reason = "Product with this name is found already";
+            return true;
         }
         else
         {
-            reason = "Product with this name is found already";
-            return true;
+            return false;
         }
     };
 
