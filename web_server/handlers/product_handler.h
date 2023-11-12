@@ -74,16 +74,18 @@ private:
         return true;
     };
 
-    bool check_existance_of_product(std::string &responseBody, std::string product_name, std::string &reason)
+    bool check_does_product_exist(std::string product_name, std::string &reason)
     {
-        if (responseBody.find(product_name) != std::string::npos)
+        auto result = database::Product::search(product_name);
+        if (result)
         {
-            reason = "Product_name" + product_name + "already exists.";
+            return false;
+        }
+        else
+        {
+            reason = "Product with this name is found already";
             return true;
         }
-
-        reason = "Product_name" + product_name + "does not exist.";
-        return false;
     };
 
     bool check_price(const int &price, std::string &reason)
@@ -188,45 +190,23 @@ public:
                         std::string message;
                         std::string reason;
 
-                        auto results = database::Product::read_all();
-                        if (!results.empty())
-                        {
-                            Poco::JSON::Array arr;
-                            for (auto s : results)
-                                arr.add(s.toJSON());
-
-                            response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
-                            response.setChunkedTransferEncoding(true);
-                            response.setContentType("application/json");
-                            std::stringstream responseStream;
-                                Poco::JSON::Stringifier::stringify(arr, responseStream);
-                                std::string responseBody = responseStream.str();
-                                std::ostream &ostr = response.send();
-                                ostr << responseBody;
-
-                            if (check_existance_of_product(responseBody, product.name(), reason))
-                                {
-                                    check_result1 = false;
-                                    message += reason;
-                                    message += "<br>";
-                                }
-                            return;
-                        }
-                        else
-                        {
-                            notFoundError(response, request.getURI(), "Products not found");
-                            return;
-                        }
-
                         if (!check_name(product.get_name(), reason))
                         {
                             check_result2 = false;
                             message += reason;
                             message += "<br>";
                         }
+                        
                         if (!check_price(product.get_price(), reason))
                         {
                             check_result3 = false;
+                            message += reason;
+                            message += "<br>";
+                        }
+
+                        if (check_does_product_exist(product.get_name(), reason))
+                        {
+                            check_result1 = false;
                             message += reason;
                             message += "<br>";
                         }
@@ -358,22 +338,19 @@ public:
                 if (form.has("name"))
                 {
                     std::string fn = form.get("name");
-                    auto results = database::Product::search(fn);
-                    if (!results.empty())
+                    auto result = database::Product::search(fn);
+                    if (!result)
                     {
-                        Poco::JSON::Array arr;
-                        for (auto s : results)
-                            arr.add(s.toJSON());
                         response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                         response.setChunkedTransferEncoding(true);
                         response.setContentType("application/json");
                         std::ostream &ostr = response.send();
-                        Poco::JSON::Stringifier::stringify(arr, ostr);
+                        Poco::JSON::Stringifier::stringify(result->toJSON(), ostr);
                         return;
                     }
                     else
                     {
-                        notFoundError(response, request.getURI(), "product not found");
+                        notFoundError(response, request.getURI(), "Product not found");
                         return;
                     }
                 }

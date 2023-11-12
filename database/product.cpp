@@ -226,13 +226,12 @@ namespace database
         }
     }
 
-    std::vector<Product> Product::search(std::string name)
+    std::optional<Product> Product::search(std::string name)
     {
         try
         {
             Poco::Data::Session session = database::Database::get().create_session();
             Statement select(session);
-            std::vector<Product> result;
             Product a;
             name += "%";
             select << "SELECT id, name, type, description, price, quantity, price, author_id FROM Product where name LIKE ?",
@@ -246,12 +245,9 @@ namespace database
                 use(name),
                 range(0, 1); //  iterate over result set one row at a time
 
-            while (!select.done())
-            {
-                if (select.execute())
-                    result.push_back(a);
-            }
-            return result;
+            select.execute();
+            Poco::Data::RecordSet rs(select);
+            if (rs.moveFirst()) return a;
         }
 
         catch (Poco::Data::MySQL::ConnectionException &e)
@@ -265,6 +261,7 @@ namespace database
             std::cout << "statement:" << e.what() << std::endl;
             throw;
         }
+        return {};
     }
 
     void Product::save_to_mysql()

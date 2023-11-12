@@ -44,7 +44,7 @@ namespace database
 
             static std::optional<Product> read_by_id(long id);
             static std::vector<Product> read_all();
-            static std::vector<Product> search(std::string name);
+            static std::optional<Product> search(std::string name);
             void save_to_mysql();
 
             Poco::JSON::Object::Ptr toJSON() const;
