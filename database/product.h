@@ -39,6 +39,7 @@ namespace database
             long &author_id();
 
             static void init();
+            bool is_user_exist();
             void update_in_mysql();
             static bool delete_in_mysql(long id);
 

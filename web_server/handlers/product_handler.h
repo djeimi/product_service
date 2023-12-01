@@ -187,8 +187,16 @@ public:
                         bool check_result1 = true;
                         bool check_result2 = true;
                         bool check_result3 = true;
+                        bool check_existance_of_user = true;
                         std::string message;
                         std::string reason;
+
+                        if(!product.is_user_exist())
+                        {
+                            check_existance_of_user = false;
+                            message += "Пользователь с таким id не существует <br>";
+                            message += "<br>";
+                        }
 
                         if (!check_name(product.get_name(), reason))
                         {
@@ -211,7 +219,7 @@ public:
                             message += "<br>";
                         }
 
-                        if (check_result1 && check_result2 && check_result3)
+                        if (check_result1 && check_result2 && check_result3 && check_existance_of_user)
                         {
                             product.save_to_mysql();
                             response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
@@ -249,8 +257,16 @@ public:
                         product.author_id() = atol(form.get("author_id").c_str());
 
                         bool check_result = true;
+                        bool check_existance_of_user = true;
                         std::string message;
                         std::string reason;
+
+                        if(!product.is_user_exist())
+                        {
+                            check_existance_of_user = false;
+                            message += "Пользователь с таким id не существует <br>";
+                            message += "<br>";
+                        }
 
                         if (!check_name(product.get_name(), reason))
                         {
@@ -265,7 +281,7 @@ public:
                             message += "<br>";
                         }
 
-                        if (check_result)
+                        if (check_result && check_existance_of_user)
                         {
                             product.update_in_mysql();
                             response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
