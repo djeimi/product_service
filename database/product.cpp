@@ -61,7 +61,7 @@ namespace database
             auto hint = Database::sharding_user(_author_id);
             Statement select(session);
             int exist;
-            select  << "SELECT EXISTS(SELECT `user_id` FROM `user` WHERE `user_id` = ?)"
+            select  << "SELECT EXISTS(SELECT `id` FROM `user` WHERE `id` = ?)"
                     << hint,
                 into(exist),
                 use(_author_id),
