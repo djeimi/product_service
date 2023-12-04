@@ -90,7 +90,7 @@ namespace database
             Poco::Data::Statement update(session);
 
             update  << "UPDATE `Product`"
-                    << "SET `name` = ?, `type` = ?, `description` = ?, `price` = ?, `price` = ?, `author_id`= ? "
+                    << "SET `name` = ?, `type` = ?, `description` = ?, `price` = ?, `quantity` = ?, `author_id`= ? "
                     << "where `id` = ?",
                 use(_name),
                 use(_type),
@@ -263,7 +263,7 @@ namespace database
             Statement select(session);
             Product a;
             name += "%";
-            select << "SELECT id, name, type, description, price, quantity, price, author_id FROM Product where name LIKE ?",
+            select << "SELECT id, name, type, description, price, quantity, author_id FROM Product WHERE name LIKE ?",
                 into(a._id),
                 into(a._name),
                 into(a._type),
