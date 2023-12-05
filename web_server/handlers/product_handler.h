@@ -355,7 +355,7 @@ public:
                 {
                     std::string fn = form.get("name");
                     auto result = database::Product::search(fn);
-                    if (!result)
+                    if (result)
                     {
                         response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                         response.setChunkedTransferEncoding(true);
